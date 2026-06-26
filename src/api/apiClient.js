@@ -1,22 +1,21 @@
 import axios from 'axios';
 
-const getBaseURL = () => {
-  const envUrl = import.meta.env.VITE_API_URL;
-  if (!envUrl) {
-    return 'http://localhost:5000/api/v1';
+let apiBaseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+
+if (apiBaseURL) {
+  apiBaseURL = apiBaseURL.replace(/\/$/, '');
+  if (!apiBaseURL.endsWith('/api/v1')) {
+    apiBaseURL = apiBaseURL + '/api/v1';
   }
-  // Trim trailing slash if present
-  const cleanUrl = envUrl.endsWith('/') ? envUrl.slice(0, -1) : envUrl;
-  // Ensure the URL ends with /api/v1
-  return cleanUrl.endsWith('/api/v1') ? cleanUrl : `${cleanUrl}/api/v1`;
-};
+}
 
 const apiClient = axios.create({
-  baseURL: getBaseURL(),
+  baseURL: apiBaseURL,
   headers: {
     'Content-Type': 'application/json'
   }
 });
+
 
 // Interceptor to attach the token from localStorage
 apiClient.interceptors.request.use(
