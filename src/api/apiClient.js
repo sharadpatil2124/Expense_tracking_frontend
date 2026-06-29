@@ -1,13 +1,20 @@
 import axios from 'axios';
 
-let apiBaseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+let apiBaseURL = import.meta.env.VITE_API_URL;
 
-if (apiBaseURL) {
-  apiBaseURL = apiBaseURL.replace(/\/$/, '');
+if (!apiBaseURL) {
+  apiBaseURL = 'http://localhost:5000/api/v1';
+} else {
+  apiBaseURL = apiBaseURL.trim().replace(/\/$/, '');
   if (!apiBaseURL.endsWith('/api/v1')) {
-    apiBaseURL = apiBaseURL + '/api/v1';
+    if (apiBaseURL.endsWith('/api')) {
+      apiBaseURL = apiBaseURL + '/v1';
+    } else {
+      apiBaseURL = apiBaseURL + '/api/v1';
+    }
   }
 }
+
 
 const apiClient = axios.create({
   baseURL: apiBaseURL,
